@@ -20,6 +20,7 @@ app.get("/check", async (req, res) => {
 app.post("/chat", authenticate.auth, async (req, res) => {
   try {
     const { input } = req.body;
+
     const openai = new OpenAI({ apiKey: process.env.OPEN_AI_KEY });
     const assistant = await openai.beta.assistants.retrieve(
       "asst_VaY1zWEmlw7bbDC8uuaEBpYP"
@@ -29,13 +30,9 @@ app.post("/chat", authenticate.auth, async (req, res) => {
       role: "user",
       content: `Please read the json filed I provided to you. ${input}`,
     });
-    // console.log(message);
-    // console.log(message.content[0].text);
     const run = await openai.beta.threads.runs.create(thread.id, {
       assistant_id: assistant.id,
     });
-
-    console.log(run);
 
     while (run.status !== "completed") {
       const targetRun = await openai.beta.threads.runs.retrieve(
@@ -53,8 +50,8 @@ app.post("/chat", authenticate.auth, async (req, res) => {
       }
       await delay(3000);
     }
-    const messages = await openai.beta.threads.messages.list(thread.id);
 
+    const messages = await openai.beta.threads.messages.list(thread.id);
     const assistantMessage = messages.body.data.find(
       (message) => message.role === "assistant"
     );
