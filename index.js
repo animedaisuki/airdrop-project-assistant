@@ -65,7 +65,7 @@ app.post("/chat", authenticate.auth, async (req, res) => {
         .json({ message: "Can not find assistant message" });
     }
   } catch (error) {
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ message: error.message });
   }
 });
 
