@@ -3,6 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const OpenAI = require("openai");
 const authenticate = require("./src/middleware/authenticate");
+const logger = require("./src/utils/logger");
 dotenv.config();
 
 const app = express();
@@ -65,6 +66,7 @@ app.post("/chat", authenticate.auth, async (req, res) => {
         .json({ message: "Can not find assistant message" });
     }
   } catch (error) {
+    logger.error("error handling openai", { message: error });
     return res.status(500).json({ message: error.message });
   }
 });
