@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const OpenAI = require("openai");
+const authenticate = require("./src/middleware/authenticate");
 dotenv.config();
 
 const app = express();
@@ -16,7 +17,7 @@ const delay = (time) => {
 app.get("/check", async (req, res) => {
   return res.status(200).json({ message: "OK" });
 });
-app.post("/chat", async (req, res) => {
+app.post("/chat", authenticate.auth, async (req, res) => {
   try {
     const { input } = req.body;
     const openai = new OpenAI({ apiKey: process.env.OPEN_AI_KEY });
